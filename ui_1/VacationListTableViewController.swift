@@ -9,15 +9,58 @@
 import UIKit
 
 class VacationListTableViewController: UITableViewController {
+    var vacationList = [Vacation]()
+    
+    func loadInitData(){
+       let vacation1 = Vacation()
+        vacation1.place = "🤔"
+        vacationList.append(vacation1)
+        
+        let vacation2 = Vacation()
+        vacation2.place = "😒"
+        vacationList.append(vacation2)
+        
+        let vacation3 = Vacation()
+        vacation3.place = "😄"
+        vacationList.append(vacation3)
+        
+        let vacation4 = Vacation()
+        vacation4.place = "😯"
+        vacationList.append(vacation4)
+        
+        
+        let vacation5 = Vacation()
+        vacation5.place = "🙀"
+        vacationList.append(vacation5)
+        
+        let vacation6 = Vacation()
+        vacation6.place = "🙄"
+        vacationList.append(vacation6)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.leftBarButtonItem = self.editButtonItem()
+        loadInitData()
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+    }
+    
+    override func setEditing(editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: true)
+        tableView.setEditing(editing, animated: true)
+    }
+    override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        if editingStyle == UITableViewCellEditingStyle.Delete{
+//            删除数组所在行
+            vacationList.removeAtIndex(indexPath.row)
+//            删除单元格所在行
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Top)
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -29,23 +72,39 @@ class VacationListTableViewController: UITableViewController {
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
-        return 0
+        return 1
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 0
+        return vacationList.count
     }
 
-    /*
+    
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("reuseIdentifier", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier("Pcell", forIndexPath: indexPath)
 
         // Configure the cell...
+       let v1 = vacationList[indexPath.row]
+        cell.textLabel?.text = v1.place
+        
+        if v1.visited{
+            cell.accessoryType = UITableViewCellAccessoryType.Checkmark
+        }else{
+            cell.accessoryType = UITableViewCellAccessoryType.None
+        }
 
         return cell
     }
-    */
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let v1 = vacationList[indexPath.row]
+        v1.visited = !v1.visited
+        tableView.deselectRowAtIndexPath(indexPath, animated: false)
+//        刷新
+        tableView.reloadData()
+    }
+    
 
     /*
     // Override to support conditional editing of the table view.
@@ -91,5 +150,15 @@ class VacationListTableViewController: UITableViewController {
         // Pass the selected object to the new view controller.
     }
     */
-
+    
+    @IBAction func unwindToList(segue: UIStoryboardSegue){
+       let source = segue.sourceViewController as! addVViewController
+        let v1 = source.vacation
+        if v1.place != "" {
+            vacationList.append(v1)
+            tableView.reloadData()
+        }
+    }
+    
+    
 }

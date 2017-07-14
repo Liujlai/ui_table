@@ -7,3 +7,9 @@
 //
 
 import Foundation
+
+
+class Vacation{
+    var place = ""
+    var visited = false
+}
